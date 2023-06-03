@@ -14,6 +14,7 @@
       </v-col>
       <v-col cols="7">
         <v-img
+          class="mt-10"
           cover
           src="../assets/lock.png"
         ></v-img>
@@ -44,11 +45,8 @@
                   <v-btn @click="login" block class="mt-2" color="primary">Login</v-btn>
               </v-col>
               <v-col cols="2">
-                <v-btn type="submit" block class="mt-2" color="">
-                  <v-icon
-                    color="red-darken-2"
-                    icon="mdi-help"
-                  ></v-icon>
+                <v-btn type="" block class="mt-2" color="">
+                  ?
                 </v-btn>
               </v-col>
             </v-row>
@@ -72,8 +70,8 @@ import SysLoader from "../components/SysLoader.vue";
 
     data: () => ({
       pwShow: false,
-      password: 'jplm12345',
-      userNm: 'JMEDINILHA',
+      password: '',
+      userNm: '',
       snackBar: {
         isSnackbar: false,
         snackStatus: "",
@@ -96,7 +94,6 @@ import SysLoader from "../components/SysLoader.vue";
           `http://localhost:3000/api/login?username=${this.userNm}&pw=${this.password}`
         )
         .then((res) =>{
-          console.log(res.data.RETURN.CNT)
           if(res.data.RETURN.CNT == 1){
             this.$emit('logStsChange', this.userNm)
           }

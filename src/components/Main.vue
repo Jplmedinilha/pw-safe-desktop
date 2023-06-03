@@ -9,15 +9,6 @@
       <SysLoader 
         :isLoader="isLoader" 
       />
-      <v-row v-if="this.onActiveTab == 0">
-        <v-col cols="1">
-        </v-col>
-        <v-col cols="10">
-          <h3 color="red" >Welcome {{userName}} </h3>
-        </v-col>
-        <v-col cols="1">
-        </v-col>
-      </v-row>
 
       <v-row fluid>
         <v-col cols="1">
@@ -29,6 +20,13 @@
             <v-tab class="rounded elevation-5" :class="this.onActiveTab == 1 ? 'orange ml-1 elevation-3' : 'secondary ml-1'">+</v-tab>       
             <v-tab-item>    
                 <v-container fluid class="pa-0">
+                  <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    single-line
+                    hide-details
+                  ></v-text-field>
                 <v-row class="table-container" v-show="true">
                     <v-col cols="12" sm="12" class="mt-2 mb-2 elevation-5">
                     <v-data-table
@@ -38,9 +36,10 @@
                         height="290"
                         class="elevation-5 rounded"
                         :hide-default-footer="true"
+                        :search="search"
                     >
                     <template v-slot:[`item.groupName`]="{ item }">
-                      <span :class="(item.critical_flg == 'Y') ? 'red--text' : 'grey--text'">{{ item.groupName }}</span>
+                      <span class="pointer" :class="(item.critical_flg == 'Y') ? 'red--text' : 'grey--text'" @click="openModal(item)">{{ item.groupName }}</span>
                     </template>
                     <template v-slot:[`item.systemName`]="{ item }">
                       <span class="pointer primary--text" @click="openModal(item)">{{ item.systemName }}</span>
@@ -127,6 +126,11 @@
           v-on:onDeleteCanceled="onConfirmCancel"
           v-on:onDeleteConfirmed="onDeleteGroupConfirm"
         />
+        <CredentialsForm
+          :isAlarm="CredentialsForm.isAlarm"
+          :item="CredentialsForm.object"
+          v-on:closeMsgResult="closeMsgResult"
+        />
       
     </v-container>
   </template>
@@ -135,6 +139,7 @@ import ResultMsg from "../components/ResultMsg.vue";
 import SysLoader from "../components/SysLoader.vue";
 import DeleteForm from "../components/DeleteForm.vue";
 import ConfirmDeleteMsg from "../components/ConfirmDeleteMsg.vue";
+import CredentialsForm from "../components/CredentialsForm.vue";
   
     export default {
       name: 'Main_form',
@@ -143,7 +148,8 @@ import ConfirmDeleteMsg from "../components/ConfirmDeleteMsg.vue";
         SysLoader,
         ResultMsg,
         DeleteForm,
-        ConfirmDeleteMsg
+        ConfirmDeleteMsg,
+        CredentialsForm,
       },
       data: () => ({
         snackBar: {
@@ -156,6 +162,10 @@ import ConfirmDeleteMsg from "../components/ConfirmDeleteMsg.vue";
           confirmText: "",
           confirmStatus: ''
         },
+        CredentialsForm: {
+          isAlarm: false,
+          object: {}
+        },
         Delete: {
           isDelete: false,
         },
@@ -165,10 +175,11 @@ import ConfirmDeleteMsg from "../components/ConfirmDeleteMsg.vue";
         activeTab: 0,
         active_tab: 0,
         headers: [
-            { value: 'groupName', text: 'Group', sortable: true},
+            { value: 'groupName', text: 'Group', sortable: false},
             { value: 'systemName', text: 'System', sortable: false }
         ],
         items: [],
+        search: '',
         inline: 0,
         groupName: '',
         criticalFlag: false,
@@ -196,6 +207,8 @@ import ConfirmDeleteMsg from "../components/ConfirmDeleteMsg.vue";
           this.snackBar.snackStatus = ""
           this.snackBar.snackbarText = ""
           this.snackBar.isSnackbar = false
+          this.CredentialsForm.isAlarm = false
+          this.CredentialsForm.object = {}
         },
         closeDelete(){
           this.Delete.DeleteStatus = ""
@@ -362,8 +375,9 @@ import ConfirmDeleteMsg from "../components/ConfirmDeleteMsg.vue";
             this.isLoader = false
           })
         },
-        openModal(){
-          console.log('oi')
+        openModal(item){
+          this.CredentialsForm.object = item
+          this.CredentialsForm.isAlarm = true
         }
         
       },
