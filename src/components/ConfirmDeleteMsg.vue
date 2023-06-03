@@ -6,19 +6,26 @@
       persistent
     >
       <v-card
-        :class="(status=='E') ? 'error' : 'blue'"
+        :class="(confirmStatus=='E') ? 'error' : 'blue'"
       >
-        <v-card-text :class="(status=='E') ? 'text-h5 red' : 'text-h5  blue'">
-          <div class="pt-4"><label style="white-space: pre-line" id="text" class="font-weight-thin white--text">  {{ snackbarText }} </label></div>
+        <v-card-text :class="(confirmStatus=='E') ? 'text-h5 red' : 'text-h5  blue'">
+          <div class="pt-4"><label style="white-space: pre-line" id="text" class="font-weight-thin white--text">  {{ confirmText }} </label></div>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer> 
           <v-btn
             color="white"
             text
+            @click="onConfirm"
+          >
+            Yes
+          </v-btn>
+          <v-btn
+            color="white"
+            text
             @click="closeMSG"
           >
-            close
+            No
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -27,27 +34,21 @@
   </div>
 </template>
 <script>
+
 export default {
-    props:{ isSnackbar: Boolean, snackbarText: String, status: String },
+    props:{ isSnackbar: Boolean, confirmText: String, confirmStatus: String },
     methods:{
         closeMSG(){
-            this.$emit('closeMsgResult')
+            this.$emit('onDeleteCanceled')
+        },
+        onConfirm(){
+            this.$emit('onDeleteConfirmed')
         }
     },
     computed:{
       localIsSnackbar:{
         get(){
           return this.isSnackbar
-        }
-      },
-      localsnackbarText:{
-        get(){
-          return this.snackbarText
-        }
-      },
-      localstatus:{
-        get(){
-          return this.status
         }
       }
     }

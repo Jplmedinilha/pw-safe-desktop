@@ -64,6 +64,7 @@ import SysLoader from "../components/SysLoader.vue";
 
   export default {
     name: 'Login_form',
+    props:{ userName: String },
     components: {
       SysLoader,
       ResultMsg
@@ -81,10 +82,17 @@ import SysLoader from "../components/SysLoader.vue";
       },
       isLoader: false
     }),
+    mounted(){
+      if(this.userName) {
+        this.snackBar.snackStatus = ""
+        this.snackBar.snackbarText = "See you soon " + this.userName + "!"
+        this.snackBar.isSnackbar = true
+      }
+    },
     methods: {
       async login(){
         this.isLoader = true
-        this.axios.get(
+        await this.axios.get(
           `http://localhost:3000/api/login?username=${this.userNm}&pw=${this.password}`
         )
         .then((res) =>{

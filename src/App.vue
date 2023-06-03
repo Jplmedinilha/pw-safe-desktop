@@ -1,10 +1,10 @@
 <template>
   <v-app>
     <div v-if="loggedIn">
-      <Main_form :userName="userName"/>
+      <Main_form :userName="userName" v-on:logStsChange="logStsChange"/>
     </div>
     <div v-else>
-      <Login_form v-on:logStsChange="logStsChange"/>
+      <Login_form :userName="userName" v-on:logStsChange="logStsChange"/>
     </div>
     
 
