@@ -1,77 +1,59 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-          @click="teste"
-        />
+    <div v-if="loggedIn">
+      <Main_form :userName="userName"/>
+    </div>
+    <div v-else>
+      <Login_form v-on:logStsChange="logStsChange"/>
+    </div>
+    
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        @click="teste"
-      >
-        oi
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <HelloWorld/>
-    </v-main>
   </v-app>
+    
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
-// import authHeader from "../axios/auth-header";
-import authHeader from "./axios/auth-header";
+import Login_form from './components/Login';
+import Main_form from './components/Main';
 
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    Login_form,
+    Main_form
   },
 
   data: () => ({
-    teste_5: []
+    loggedIn: false,
+    userName: ''
   }),
   methods:{
-    async teste(){
-
-      await this.axios.get(
-        `http://localhost:3000/api/login?username=JMEDINILHA&pw=jplm12345`, { headers: authHeader(true) }
-      )
-      .then((res) =>{
-        console.log(res)
-      })
-      .catch((err)=>{
-        console.log(err)
-      })
-
-      console.log('oi');
+    logStsChange(name){
+      this.loggedIn = !this.loggedIn
+      this.userName = name
     }
   }
 };
 </script>
+
+<style lang="scss">
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent
+}
+::-webkit-scrollbar-thumb {
+  background: #727780;
+  border-radius: 3px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #666b74;
+  border-radius: 10px;
+}
+</style>
