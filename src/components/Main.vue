@@ -9,41 +9,83 @@
         <v-col cols="1">
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="11">
-          <v-sheet>
-            <v-form fast-fail>
-              <v-text-field
-                v-model="userNm"
-                label="Username"
-              ></v-text-field>
-              <v-text-field
-                :append-icon="pwShow ? 'mdi-eye' : 'mdi-eye-off'"
-                :type="pwShow ? 'text' : 'password'"
-                v-model="password"
-                name="input-10-2"
-                label="Password"
-                hint="At least 8 characters"
-                class="input-group--focused"
-                @click:append="pwShow = !pwShow"
-              ></v-text-field>
-              <v-row>
-                <v-col cols="10">
-                    <v-btn @click="login" block class="mt-2" color="primary">Login</v-btn>
-                </v-col>
-                <v-col cols="2">
-                  <v-btn type="submit" block class="mt-2" color="">
-                    <v-icon
-                      color="red-darken-2"
-                      icon="mdi-help"
-                    ></v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-sheet>
+
+      <v-row fluid>
+        <v-col cols="1">
         </v-col>
-      </v-row>
+        <v-col cols="10" no-gutters class="pa-0 mt-2 mb-1">
+            <v-tabs v-model="active_tab" left dark height="40px" background-color="#fff" @change="tabChanged">
+            <v-tabs-slider color="secondary"></v-tabs-slider>
+            <!-- <v-tab class="rounded elevation-5" :class="this.onActiveTab == 0 ? 'orange' : 'secondary'">PW List</v-tab> -->
+            <v-tab class="rounded elevation-5" :class="this.onActiveTab == 0 ? 'orange' : 'secondary'">Passwords</v-tab>
+            <v-tab class="rounded elevation-5" :class="this.onActiveTab == 1 ? 'orange ml-1 elevation-3' : 'secondary ml-1'">ADD</v-tab>         
+            <v-tab-item>    
+                <v-container fluid class="pa-0">
+                <v-row class="table-container" v-show="true">
+                    <v-col cols="12" sm="12" class="mt-2 mb-2 elevation-5">
+                    <v-data-table
+                        dense
+                        :headers="headers"
+                        :items="items"
+                        height="300"
+                        class="elevation-5 rounded"
+                        :hide-default-footer="true"
+                    >
+                    </v-data-table>
+                    <!-- <template>
+                        <v-table
+                            fixed-header
+                            dense
+                            height="300px"
+                        >
+                            <thead>
+                                <tr>
+                                    <th class="">
+                                        Group
+                                    </th>
+                                    <th class="">
+                                        System
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="item in items"
+                                    :key="item.name"
+                                >
+                                    <td>{{ item.GROUP }}</td>
+                                    <td>{{ item.SYSTEM }}</td>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                    </template> -->
+                    </v-col>
+                </v-row>
+                </v-container>
+            </v-tab-item>
+            <v-tab-item>
+                <v-container fluid class="pa-0">
+                <v-row class="table-container" v-show="true">
+                    <v-col cols="12" sm="12" class="mt-2 mb-2 elevation-5">
+                    
+                    </v-col>
+                </v-row>
+                </v-container>
+            </v-tab-item>
+            <v-tab-item>
+                <v-container fluid class="pa-0">
+                <v-row class="table-container" v-show="true">
+                    <v-col cols="12" sm="12" class="mt-2 mb-2 elevation-5">
+                    
+                    </v-col>
+                </v-row>
+                </v-container>
+            </v-tab-item>
+            </v-tabs>
+        </v-col>
+        </v-row>
+    
+      
     </v-container>
   </template>
   <script>
@@ -53,7 +95,17 @@
       data: () => ({
         pwShow: false,
         password: '',
-        userNm: ''
+        userNm: '',
+        activeTab: 0,
+        active_tab: 0,
+        headers: [
+            { value: 'GROUP', text: 'Group', sortable: false },
+            { value: 'SYSTEM', text: 'System', sortable: false }
+        ],
+        items: [{
+            GROUP: 'OI',
+            SYSTEM: 'OI'
+        }]
       }),
       methods: {
         async login(){
@@ -66,8 +118,18 @@
           .catch((err)=>{
             console.log(err)
           })
-        }
-      }
+        },
+        tabChanged(data) {
+            this.activeTab = data;
+        },
+      },
+      computed: {
+        onActiveTab() {
+            return this.activeTab;
+        },
+      },
     }
   </script>
-  
+<style>
+
+</style>
