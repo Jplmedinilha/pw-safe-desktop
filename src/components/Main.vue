@@ -9,7 +9,7 @@
       <SysLoader 
         :isLoader="isLoader" 
       />
-
+      
       <v-row fluid>
         <v-col cols="1">
         </v-col>
@@ -130,6 +130,7 @@
           :isAlarm="CredentialsForm.isAlarm"
           :item="CredentialsForm.object"
           v-on:closeMsgResult="closeMsgResult"
+          v-on:deleteCredential="deleteCredential"
         />
       
     </v-container>
@@ -140,6 +141,7 @@ import SysLoader from "../components/SysLoader.vue";
 import DeleteForm from "../components/DeleteForm.vue";
 import ConfirmDeleteMsg from "../components/ConfirmDeleteMsg.vue";
 import CredentialsForm from "../components/CredentialsForm.vue";
+
   
     export default {
       name: 'Main_form',
@@ -378,6 +380,37 @@ import CredentialsForm from "../components/CredentialsForm.vue";
         openModal(item){
           this.CredentialsForm.object = item
           this.CredentialsForm.isAlarm = true
+        },
+        async deleteCredential(groupName, systemName, credUser){
+          this.isLoader = true
+
+          const params = {
+            userName: this.userName,
+            groupName: groupName,
+            systemName: systemName,
+            credUser: credUser
+          }
+          console.log(params)
+          await this.axios.post(
+            `http://localhost:3000/api/deleteCredential`, params
+          )
+          .then((res) =>{
+            console.log(res.data.RETURN)
+            this.snackBar.snackStatus = ""
+            this.snackBar.snackbarText = "Deleted Credentials: " + res.data.RETURN.affectedRows
+            this.snackBar.isSnackbar = true
+            this.ConfirmMsg.isConf = false
+            this.ConfirmMsg.isConf = false
+
+            this.isLoader = false
+            this.clearFields();
+            this.getCredentials()
+            
+          })
+          .catch((err)=>{
+            console.log(err)
+            this.isLoader = false
+          })
         }
         
       },
